@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JR Keralit Calculator</title>
+<meta name="theme-color" content="#173d63">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+body{font-family:Arial,sans-serif;background:#eef2f6;margin:0;color:#17212b;-webkit-tap-highlight-color:transparent} input,select,button{min-height:46px} input:focus,select:focus{outline:3px solid #173d6326;border-color:#173d63} .brand{background:linear-gradient(135deg,#173d63,#245b8f);color:white;padding:22px;border-radius:16px} .brand h1{font-size:24px}.brand .sub{color:#dbe8f4}.sectionno{display:inline-block;background:#173d63;color:white;border-radius:999px;padding:3px 9px;font-size:12px;margin-right:7px}.card{border:1px solid #e4e9ef} .good{border:2px solid #b8dfc0} @media(max-width:450px){.wrap{padding:10px}.card{padding:14px;border-radius:12px}h2{font-size:17px}.kpi b{font-size:19px}}
+.wrap{max-width:1000px;margin:auto;padding:16px}.card{background:white;padding:18px;margin-bottom:14px;border-radius:14px;box-shadow:0 2px 9px #00000012}
+h1{margin:0 0 5px}h2{font-size:18px;margin:0 0 14px}.sub{font-size:13px;color:#667085}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.result{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+label{display:block;font-size:12px;font-weight:bold;margin-bottom:5px}input,select,button{width:100%;box-sizing:border-box;padding:11px;border:1px solid #cfd5dd;border-radius:8px;font-size:15px}
+button{background:#173d63;color:white;font-weight:bold;cursor:pointer}.remove{background:white;color:#b42318;border-color:#f0b7b2}
+.part{border-top:1px solid #eee;margin-top:12px;padding-top:12px}.kpi{background:#f6f8fa;border-radius:10px;padding:13px}.kpi b{display:block;font-size:21px;margin-top:5px}
+.good{background:#eaf7ed}.note{font-size:13px;background:#fff7d8}.hidden{display:none}
+@media(max-width:720px){.grid,.result{grid-template-columns:1fr 1fr}}@media(max-width:450px){.grid,.result{grid-template-columns:1fr}}
+</style></head>
+<body><div class="wrap">
+<div class="brand"><h1>JR Bouw &amp; Kozijnen</h1><div class="sub">Keralit Calculator PRO · calculatie, materiaal &amp; verkoopprijs</div></div>
+
+<div class="card"><h2>Projectgegevens</h2><div class="sub" style="margin:-7px 0 12px">Vul eerst de klant en het project in.</div><div class="grid">
+<div><label>Referentie / klantnaam</label><input id="reference" type="text" autocomplete="off" placeholder="Bijv. Van Beek"></div>
+<div><label>Adres / project</label><input id="projectAddress" type="text" placeholder="Optioneel"></div>
+</div></div>
+
+<div class="card"><h2><span class="sectionno">1</span>Keralit type</h2><div class="grid">
+<div><label>Type</label><select id="type">
+<option value="143n">Keralit 143 mm normaal</option>
+<option value="143s">Keralit 143 mm Shadowline</option>
+<option value="190">Keralit 190 mm</option>
+<option value="177">Keralit Potdeksel 177 mm</option>
+</select></div>
+<div><label>Werkende breedte</label><input id="cover" value="143 mm" disabled></div>
+<div><label>Lengte per deel</label><input value="6000 mm" disabled></div>
+<div><label>Reserve / snijverlies</label><input id="waste" type="number" value="10" min="0" step="1"></div>
+</div></div>
+
+<div class="card"><h2><span class="sectionno">2</span>Gevelvlakken</h2><div id="parts"></div><button id="add" type="button">+ Geveldeel toevoegen</button></div>
+
+<div class="card"><h2><span class="sectionno">3</span>Extra materialen</h2>
+<div class="grid">
+<div><label><input id="foilOn" type="checkbox" style="width:auto"> Folie</label><input value="€ 7,50 per m²" disabled></div>
+<div><label><input id="battenOn" type="checkbox" style="width:auto"> Regelwerk</label><input value="€ 20,00 per m²" disabled></div>
+<div><label><input id="insOn" type="checkbox" style="width:auto"> Isolatie</label><input value="€ 35,00 per m²" disabled></div>
+<div><label><input id="scaffoldOn" type="checkbox" style="width:auto"> Steiger</label><input value="€ 350,00 vast" disabled></div>
+<div><label><input id="aluStartOn" type="checkbox" style="width:auto"> Alu startprofiel</label><input value="€ 22,75 per 4 m" disabled><input id="aluStartQty" type="number" value="1" min="0" step="1" placeholder="Aantal stuks"></div>
+<div><label><input id="aluEndOn" type="checkbox" style="width:auto"> Alu eindprofiel</label><input value="€ 23,24 per 4 m" disabled><input id="aluEndQty" type="number" value="1" min="0" step="1" placeholder="Aantal stuks"></div>
+<div><label><input id="kerEndOn" type="checkbox" style="width:auto"> Keralit eindprofiel</label><input value="€ 38,51 per 4 m" disabled><input id="kerEndQty" type="number" value="1" min="0" step="1" placeholder="Aantal stuks"></div>
+<div><label>Boeideel 30 mm – aantal 6 m delen</label><input id="fascia30Qty" type="number" value="0" min="0" step="1"><input value="€ 276,95 incl. btw per 6 m" disabled></div>
+<div><label>Boeideel 35 mm – aantal 6 m delen</label><input id="fascia35Qty" type="number" value="0" min="0" step="1"><input value="€ 301,89 incl. btw per 6 m" disabled></div>
+</div>
+<div class="sub" style="margin-top:10px">Vink aan wat nodig is; de bedragen worden automatisch bij de verkoopprijs opgeteld.</div>
+</div>
+
+<div class="card"><h2><span class="sectionno">4</span>Uren & prijzen</h2><div class="grid">
+<div><label>Totaal aantal uren</label><input id="hours" type="number" inputmode="decimal" value="0" min="0" step=".5"></div>
+<div><label>Vast uurtarief</label><input value="€ 65,00" disabled></div>
+<div><label>Keralit inkoop per m²</label><input id="keralitSqmPrice" value="€ 105,48 per m²" disabled></div>
+<div><label>Inkooptype</label><input id="keralitPriceNote" value="Keralit 143 normaal: € 105,48 per m²" disabled></div><div><label>Verkoopmarge Keralit</label><input value="30% brutomarge" disabled></div>
+<div><label>Overige inkoop (€)</label><input id="otherbuy" type="number" value="0" min="0" step=".01"></div>
+<div><label>Overige verkoop (€)</label><input id="othersell" type="number" value="0" min="0" step=".01"></div>
+</div></div>
+
+<div class="card good"><h2>Calculatie-uitkomst</h2><div class="result">
+<div class="kpi">Totaal geveloppervlak<b id="sqm">0,00 m²</b></div>
+<div class="kpi">Delen vóór reserve<b id="raw">0 stuks</b></div>
+<div class="kpi">Te bestellen<b id="order">0 stuks</b></div>
+<div class="kpi">Inkoop materiaal totaal<b id="cost">€ 0,00</b></div>
+<div class="kpi">Arbeid à €65<b id="labor">€ 0,00</b></div>
+<div class="kpi">Verkoop excl. btw<b id="sale">€ 0,00</b></div>
+<div class="kpi">Verkoop incl. 21% btw<b id="vat">€ 0,00</b></div>
+</div></div>
+
+<div class="card"><h2>Rapport / PDF</h2><div class="grid">
+<div><button id="pdfInternal" type="button">PDF intern</button></div>
+<div><button id="pdfCustomer" type="button">PDF voor klant</button></div>
+</div><div class="sub" style="margin-top:10px">Er opent een nette afdrukweergave. Kies daarna in het afdrukvenster <b>Opslaan als PDF</b>.</div></div>
+
+<div class="card note"><b>Controle:</b> zodra je bijvoorbeeld breedte <b>7</b> en hoogte <b>3,10</b> invult, moet het aantal m² en het aantal delen hieronder direct veranderen. Bij Potdeksel wordt de montage automatisch horizontaal gezet.</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var partNo=0;
+function el(id){return document.getElementById(id);}
+function num(v){var x=parseFloat(String(v).replace(",","."));return isNaN(x)?0:x;}
+function euro(v){return new Intl.NumberFormat("nl-NL",{style:"currency",currency:"EUR"}).format(v||0);}
+
+function calculate(){
+ var totalSqm=0,totalStock=0;
+ var typeVal=el("type").value; var coverMm=(typeVal==="143n"||typeVal==="143s")?143:num(typeVal);
+ var rows=document.querySelectorAll(".part");
+
+ rows.forEach(function(r){
+   var w=num(r.querySelector(".width").value);
+   var h=num(r.querySelector(".height").value);
+   var qty=Math.max(1,Math.floor(num(r.querySelector(".qty").value)||1));
+   var direction=r.querySelector(".direction").value;
+
+   totalSqm += w*h*qty;
+   if(w<=0 || h<=0) return;
+
+   var cutLengthM = direction==="horizontal" ? w : h;
+   var coveredM = direction==="horizontal" ? h : w;
+   var courses=Math.ceil((coveredM*1000)/coverMm);
+
+   // Number of full 6m stock boards needed per course.
+   // For cuts <=6m, account for multiple cuts from one stock board.
+   var stockPerFace=0;
+   if(cutLengthM<=6){
+      var cutsPerBoard=Math.max(1,Math.floor(6/cutLengthM));
+      stockPerFace=Math.ceil(courses/cutsPerBoard);
+   } else {
+      // Long facade run: each course needs multiple 6m lengths.
+      stockPerFace=courses*Math.ceil(cutLengthM/6);
+   }
+      totalStock += stockPerFace*qty;
+  });
+
+ var waste=num(el("waste").value)/100;
+ var order=Math.ceil(totalStock*(1+waste));
+ var extras=0;
+ if(el("foilOn").checked){extras+=totalSqm*7.50;}
+ if(el("battenOn").checked){extras+=totalSqm*20.00;}
+ if(el("insOn").checked){extras+=totalSqm*35.00;}
+ var scaffold=el("scaffoldOn").checked?350:0;
+ var profileBuy=0, profileSale=0;
+ if(el("aluStartOn").checked){profileBuy+=num(el("aluStartQty").value)*(22.75/1.21);profileSale+=num(el("aluStartQty").value)*(22.75/1.21)/0.70;}
+ if(el("aluEndOn").checked){profileBuy+=num(el("aluEndQty").value)*(23.24/1.21);profileSale+=num(el("aluEndQty").value)*(23.24/1.21)/0.70;}
+ if(el("kerEndOn").checked){profileBuy+=num(el("kerEndQty").value)*(38.51/1.21);profileSale+=num(el("kerEndQty").value)*(38.51/1.21)/0.70;}
+ profileBuy+=num(el("fascia30Qty").value)*(276.95/1.21);profileSale+=num(el("fascia30Qty").value)*(276.95/1.21)/0.70;
+ profileBuy+=num(el("fascia35Qty").value)*(301.89/1.21);profileSale+=num(el("fascia35Qty").value)*(301.89/1.21)/0.70;
+ var sqmBuyPrice = typeVal==="143n" ? 105.48 : (typeVal==="143s" ? 162.88 : (typeVal==="190" ? 105.82 : 105.78));
+ var keralitBuy = totalSqm * sqmBuyPrice;
+ var keralitSale = keralitBuy / 0.70;
+ var materialCost=keralitBuy+num(el("otherbuy").value)+profileBuy;
+ var labor=num(el("hours").value)*65;
+ var sale=keralitSale+num(el("othersell").value)+extras+profileSale+labor+scaffold;
+
+ el("sqm").textContent=totalSqm.toLocaleString("nl-NL",{minimumFractionDigits:2,maximumFractionDigits:2})+" m²";
+ el("raw").textContent=totalStock+" stuks";
+ el("order").textContent=order+" stuks";
+ el("cost").textContent=euro(materialCost);
+ el("labor").textContent=euro(labor);
+ el("sale").textContent=euro(sale);
+ el("vat").textContent=euro(sale*1.21);
+}
+
+function wire(container){
+ container.querySelectorAll("input,select").forEach(function(x){
+   x.addEventListener("input",calculate);
+      x.addEventListener("change",calculate);
+  });
+}
+
+function addPart(){
+ partNo++;
+ var d=document.createElement("div");
+ d.className="part";
+ d.innerHTML=
+ '<div class="grid">'+
+ '<div><label>Naam</label><input value="Geveldeel '+partNo+'"></div>'+
+ '<div><label>Breedte (meter)</label><input class="width" type="number" inputmode="decimal" step="0.01" min="0" placeholder="bijv. 7,00"></div>'+
+ '<div><label>Hoogte (meter)</label><input class="height" type="number" inputmode="decimal" step="0.01" min="0" placeholder="bijv. 3,10"></div>'+
+ '<div><label>Aantal gelijke vlakken</label><input class="qty" type="number" value="1" step="1" min="1"></div>'+
+ '<div><label>Montagerichting</label><select class="direction"><option value="horizontal">Horizontaal</option><option value="vertical">Verticaal</option></select></div>'+
+ '<div><label>&nbsp;</label><button type="button" class="remove">Verwijderen</button></div>'+
+ '</div>';
+ el("parts").appendChild(d);
+ wire(d);
+ d.querySelector(".remove").addEventListener("click",function(){d.remove();calculate();});
+ if(el("type").value==="177"){
+   d.querySelector(".direction").value="horizontal";
+   d.querySelector(".direction").disabled=true;
+ }
+ calculate();
+}
+
+el("add").addEventListener("click",addPart);
+["waste","hours","otherbuy","othersell","foilOn","battenOn","insOn","scaffoldOn","aluStartOn","aluStartQty","aluEndOn","aluEndQty","kerEndOn","kerEndQty","fascia30Qty","fascia35Qty"].forEach(function(id){
+ el(id).addEventListener("input",calculate);
+ el(id).addEventListener("change",calculate);
+});
+el("type").addEventListener("change",function(){
+ var coverVal=(this.value==="143n"||this.value==="143s")?143:this.value;
+ el("cover").value=coverVal+" mm";
+ var price = this.value==="143n" ? 105.48 : (this.value==="143s" ? 162.88 : (this.value==="190" ? 105.82 : 105.78));
+ var label = this.value==="143n" ? "Keralit 143 normaal" : (this.value==="143s" ? "Shadowline 143" : (this.value==="190" ? "Keralit 190" : "Potdeksel"));
+ el("keralitSqmPrice").value="€ "+price.toFixed(2).replace(".",",")+" per m²";
+ el("keralitPriceNote").value=label+": € "+price.toFixed(2).replace(".",",")+" per m²";
+ document.querySelectorAll(".direction").forEach(function(s){
+   if(el("type").value==="177"){s.value="horizontal";s.disabled=true;}
+   else{s.disabled=false;}
+ });
+ calculate();
+});
+
+function checkedText(id, text){
+ return el(id) && el(id).checked ? text : "";
+}
+function makePdfView(internal){
+ calculate();
+ var ref=el("reference").value.trim() || "Keralit berekening";
+ var addr=el("projectAddress").value.trim();
+ var typeSel=el("type");
+ var typeText=typeSel.options[typeSel.selectedIndex].text;
+ var rowsHtml="";
+ document.querySelectorAll(".part").forEach(function(r){
+   var name=r.querySelector('input:not([type="number"])') ? r.querySelector('input:not([type="number"])').value : "Geveldeel";
+   var w=num(r.querySelector(".width").value), h=num(r.querySelector(".height").value), q=num(r.querySelector(".qty").value)||1;
+   if(w>0 && h>0){
+     rowsHtml += "<tr><td>"+name+"</td><td>"+w.toFixed(2)+" m</td><td>"+h.toFixed(2)+" m</td><td>"+q+"</td><td>"+(w*h*q).toFixed(2)+" m²</td></tr>";
+   }
+ });
+ var opts=[];
+ if(el("foilOn").checked) opts.push("Folie");
+ if(el("battenOn").checked) opts.push("Regelwerk");
+ if(el("insOn").checked) opts.push("Isolatie");
+ if(el("scaffoldOn").checked) opts.push("Steiger (€350)");
+ if(el("aluStartOn").checked) opts.push("Alu startprofiel: "+num(el("aluStartQty").value)+" st.");
+ if(el("aluEndOn").checked) opts.push("Alu eindprofiel: "+num(el("aluEndQty").value)+" st.");
+ if(el("kerEndOn").checked) opts.push("Keralit eindprofiel: "+num(el("kerEndQty").value)+" st.");
+ var f30=num(el("fascia30Qty").value), f35=num(el("fascia35Qty").value);
+ if(f30) opts.push("Boeideel 30 mm: "+f30+" st.");
+ if(f35) opts.push("Boeideel 35 mm: "+f35+" st.");
+
+ var internalRows = internal ? `
+ <tr><th>Inkoop materiaal totaal</th><td>${el("cost").textContent}</td></tr>
+ <tr><th>Keralit inkoopprijs</th><td>${el("keralitSqmPrice").value}</td></tr>` : "";
+
+ var html=`<!doctype html><html><head><meta charset="utf-8"><title>${ref}</title>
+ <style>
+ body{font-family:Arial,sans-serif;color:#202936;margin:32px}h1{margin-bottom:4px}h2{margin-top:26px;font-size:18px}
+ .muted{color:#667085}table{width:100%;border-collapse:collapse;margin-top:10px}th,td{padding:9px;border-bottom:1px solid #ddd;text-align:left}
+ .total{font-size:20px;font-weight:bold}.box{background:#f5f7f9;padding:14px;border-radius:8px;margin-top:12px}
+ @media print{button{display:none}body{margin:15mm}}
+ </style></head><body>
+ <h1>JR Bouw & Kozijnen B.V.</h1><div class="muted">${internal?"Interne Keralit-berekening":"Keralit werkzaamheden"}</div>
+ <h2>${ref}</h2>${addr?`<div>${addr}</div>`:""}
+ <div class="box"><b>Keralit type:</b> ${typeText}<br><b>Totaal oppervlak:</b> ${el("sqm").textContent}<br><b>Totaal aantal uren:</b> ${num(el("hours").value)} uur</div>
+ <h2>Gevelvlakken</h2><table><tr><th>Onderdeel</th><th>Breedte</th><th>Hoogte</th><th>Aantal</th><th>Oppervlak</th></tr>${rowsHtml}</table>
+ <h2>Materialen / opties</h2><div>${opts.length?opts.join("<br>"):"Geen extra opties geselecteerd"}</div>
+ ${internal?`<h2>Bestelling</h2><table><tr><th>Delen vóór reserve</th><td>${el("raw").textContent}</td></tr><tr><th>Te bestellen</th><td>${el("order").textContent}</td></tr></table>`:""}
+ <h2>${internal?"Financieel":"Prijs"}</h2><table>${internalRows}
+ <tr><th>Arbeid</th><td>${el("labor").textContent}</td></tr>
+ <tr><th>Verkoop excl. btw</th><td>${el("sale").textContent}</td></tr>
+ <tr><th>Verkoop incl. 21% btw</th><td class="total">${el("vat").textContent}</td></tr></table>
+ <p class="muted" style="margin-top:30px">Berekening gegenereerd met JR Bouw & Kozijnen · Keralit Calculator PRO.</p>
+ <script>window.onload=function(){window.print();}<\/script></body></html>`;
+ var w=window.open("","_blank");
+ if(!w){alert("Sta pop-ups toe om de PDF-weergave te openen.");return;}
+ w.document.open();w.document.write(html);w.document.close();
+}
+el("pdfInternal").addEventListener("click",function(){makePdfView(true);});
+el("pdfCustomer").addEventListener("click",function(){makePdfView(false);});
+
+addPart();
+calculate();
+})();
+</script>
+<script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("./service-worker.js").catch(function(){});});}</script>
+</body></html>
